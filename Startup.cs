@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using QuizWebApplication.Data;
 using QuizWebApplication.Services;
 using Microsoft.AspNetCore.Http;
 
@@ -28,11 +27,10 @@ namespace QuizWebApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddSession();
 
             services.AddTransient<JDService>();
-
-            services.AddDbContext<QuizWebApplicationContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("QuizWebApplicationContext")));
+            services.AddTransient<DatabaseService>();
 
             services.AddControllers();
         }
@@ -60,6 +58,8 @@ namespace QuizWebApplication
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseAuthorization();
 

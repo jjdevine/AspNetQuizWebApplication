@@ -1,0 +1,27 @@
+﻿@page
+@model QuizWebApplication.Pages.QuizPages.UserSelectModel
+@{
+    ViewData["Title"] = "Quiz User Select";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Select your user</h1>
+
+    <div>
+        <form method="post">
+            <input type="text" name="username" />
+            <input type="submit"/>
+        </form>
+    </div>
+
+    @if (Model.ErrorList.Count > 0 )
+    {
+        <div class="text-danger">
+            @foreach (var error in Model.ErrorList)
+            {
+                @error <br/>
+            }
+        </div>
+    }
+
+</div>

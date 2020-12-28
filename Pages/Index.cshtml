@@ -8,4 +8,21 @@
     <h1 class="display-4">Quiz Website</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     <p>@Model.GeneratedValue</p>
+    <div>
+        @if (Model.RandomNumber < 5)
+        {
+            <p>Random number was @Model.RandomNumber, so you get the first paragraph.</p>
+        }
+        else
+        {
+            <p>Random number was @Model.RandomNumber, so this is the second paragraph.</p>
+        }
+    </div>
+    <div>
+
+        <textarea>
+            @Model.DBValue
+        </textarea>
+    </div>
+
 </div>

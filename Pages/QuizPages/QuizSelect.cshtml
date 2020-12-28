@@ -1,0 +1,13 @@
+﻿@page
+@model QuizWebApplication.Pages.QuizPages.QuizSelectModel
+@{
+    ViewData["Title"] = "Quiz selection";
+}
+
+<h1> quiz select Page</h1>
+
+<h2>@Model.Session.Username</h2>
+
+<a asp-page="/QuizPages/QuizEditor">Create New Quiz</a>
+
+

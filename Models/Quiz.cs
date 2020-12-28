@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 
 namespace QuizWebApplication.Models
 {
-    public class TestModel
+    public class Quiz
     {
-        public string JDProp1 { get; set; }
-        public int JDIntProp { get; set; }
+        public Guid Id { get; set; }
+
+        public string Username { get; set; }
+
+        public string QuizName { get; set; }
     }
 }
