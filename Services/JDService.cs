@@ -10,7 +10,7 @@ namespace QuizWebApplication.Services
     {
         public JDService(IWebHostEnvironment webHostEnvironment)
         {
-
+            this.WebHostEnvironment = webHostEnvironment;
         }
 
         public IWebHostEnvironment WebHostEnvironment { get; }
