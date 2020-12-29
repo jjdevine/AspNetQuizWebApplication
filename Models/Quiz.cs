@@ -12,5 +12,10 @@ namespace QuizWebApplication.Models
         public string Username { get; set; }
 
         public string QuizName { get; set; }
+
+        public override string ToString()
+        {
+            return $"Quiz id [{Id}], Username [{Username}], QuizName [{QuizName}]";
+        }
     }
 }
