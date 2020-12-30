@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace QuizWebApplication.Services
@@ -25,6 +26,50 @@ namespace QuizWebApplication.Services
             connection.Open();
             int result = command.ExecuteNonQuery();
             return result > 0;
+        }
+
+        public bool PersistQuizQuestions(List<QuizQuestion> quizQuestions)
+        {
+            if(quizQuestions.Count == 0)
+            {
+                Console.WriteLine("No questions provided!");
+                return false;
+            }
+
+            // batch inserting - http://richorama.github.io/2017/11/28/sql-bulk-copy/
+
+            StringBuilder sql = new StringBuilder("INSERT INTO [quiz].[QuizQuestions] ([QuestionId], [QuizId], [Question], [Answer], [Order]) VALUES \r\n" +
+                "(@QuestionId0, @QuizId0, @Question0, @Answer0, @Order0)");
+
+            for (var x = 1; x < quizQuestions.Count; x++)
+            {
+                sql.Append($",\r\n (@QuestionId{x}, @QuizId{x}, @Question{x}, @Answer{x}, @Order{x})");
+            }
+
+            using SqlConnection connection = DatabaseUtils.GetSQLConnection();
+            using SqlCommand command = new SqlCommand(sql.ToString(), connection);
+
+            for (var x = 0; x < quizQuestions.Count; x++)
+            {
+                var thisQuizQuestion = quizQuestions[x];
+
+                command.Parameters.Add($"@QuestionId{x}", System.Data.SqlDbType.UniqueIdentifier).Value = thisQuizQuestion.QuestionId;
+                command.Parameters.Add($"@QuizId{x}", System.Data.SqlDbType.UniqueIdentifier).Value = thisQuizQuestion.QuizId;
+                command.Parameters.Add($"@Question{x}", System.Data.SqlDbType.NVarChar, 4000).Value = thisQuizQuestion.Question;
+                command.Parameters.Add($"@Answer{x}", System.Data.SqlDbType.NVarChar, 4000).Value = thisQuizQuestion.Answer;
+                command.Parameters.Add($"@Order{x}", System.Data.SqlDbType.Int).Value = thisQuizQuestion.Order;
+            }
+
+            connection.Open();
+            int result = command.ExecuteNonQuery();
+            return result == quizQuestions.Count;
+
+
+            /*
+             * INSERT INTO [quiz].[QuizQuestions] ([QuestionId], [QuizId], [Question], [Answer]) VALUES
+	        (newid(), newid(), 'test question', 'test answer'),
+	        (newid(), newid(), 'test question2', 'test answer2')
+             */
         }
     }
 }

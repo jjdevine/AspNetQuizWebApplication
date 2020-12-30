@@ -40,6 +40,9 @@ namespace QuizWebApplication.Pages.QuizPages
         private readonly List<String> errorList = new List<string>();
         public List<String> ErrorList { get { return errorList; } }
 
+        private readonly List<String> infoList = new List<string>();
+        public List<String> InfoList { get { return infoList; } }
+
         public void OnGet(string quizId)
         {
             QuizId = quizId;
@@ -68,12 +71,28 @@ namespace QuizWebApplication.Pages.QuizPages
                 return Page();
             }
 
+            if (quizQuestions.Count > 1000)
+            {
+                errorList.Add($"1000 Questions is the maximum - you have {quizQuestions.Count}");
+                return Page();
+            }
+
             bool success = QuizRepository.PersistQuiz(quiz);
             Console.WriteLine(success ? "Quiz Persisted Successfully" : "Quiz failed to persist");
-         //   quizQuestions.ForEach(question => Console.WriteLine(question));
 
+            success = QuizRepository.PersistQuizQuestions(quizQuestions);
+            Console.WriteLine(success ? "Quiz Questions Persisted Successfully" : "Quiz Questions failed to persist");
 
-            return null;
+            if(success)
+            {
+                infoList.Add($"Quiz [{QuizName}] saved successfully!");
+            } 
+            else
+            {
+                errorList.Add($"Quiz [{QuizName}] failed to save");
+            }
+
+            return Page();
         }
 
         private Quiz ParseQuiz()
@@ -97,6 +116,7 @@ namespace QuizWebApplication.Pages.QuizPages
 
             string[] quizLines = QuizText.Split('\n');
 
+            int index = 1;
             foreach (string quizLine in quizLines)
             {
                 if (quizLine.Contains('=') && quizLine[0] != '#')
@@ -110,7 +130,8 @@ namespace QuizWebApplication.Pages.QuizPages
                             Guid.NewGuid(),
                             quizId,
                             tokens[0],
-                            tokens[1]));
+                            tokens[1],
+                            index++));
                     }
                 }
             }
