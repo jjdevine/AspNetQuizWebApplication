@@ -31,6 +31,7 @@ namespace QuizWebApplication
 
             services.AddTransient<JDService>();
             services.AddTransient<DatabaseService>();
+            services.AddTransient<IQuizRepository, QuizRepository>();
 
             services.AddControllers();
         }

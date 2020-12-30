@@ -23,3 +23,5 @@ CREATE TABLE [quiz].[QuizQuestions](
 ) ON [PRIMARY]
 GO
 
+-- sample inserts
+INSERT INTO [quiz].[UserQuizzes] (QuizId, [User], QuizName) values (newid(), 'test', 'quiz1');
