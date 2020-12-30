@@ -7,11 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QuizWebApplication.Extensions;
 using QuizWebApplication.Models;
+using QuizWebApplication.Services;
 
 namespace QuizWebApplication.Pages.QuizPages
 {
     public class QuizEditorModel : PageModel
     {
+        private readonly IQuizRepository QuizRepository;
+        public QuizEditorModel(IQuizRepository quizRepository)
+        {
+            this.QuizRepository = quizRepository;
+        }
+
         //routing param
         [StringLength(50, MinimumLength = 3)]
         [Required]
@@ -61,10 +68,9 @@ namespace QuizWebApplication.Pages.QuizPages
                 return Page();
             }
 
-
-
-            Console.WriteLine(quiz);
-            quizQuestions.ForEach(question => Console.WriteLine(question));
+            bool success = QuizRepository.PersistQuiz(quiz);
+            Console.WriteLine(success ? "Quiz Persisted Successfully" : "Quiz failed to persist");
+         //   quizQuestions.ForEach(question => Console.WriteLine(question));
 
 
             return null;
