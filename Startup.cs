@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using QuizWebApplication.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace QuizWebApplication
 {
@@ -34,6 +35,10 @@ namespace QuizWebApplication
             services.AddTransient<IQuizRepository, QuizRepository>();
 
             services.AddControllers();
+
+            services.AddMvc().AddRazorPagesOptions(options => {
+                options.Conventions.AddPageRoute("/QuizPages/UserSelect", "");
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
