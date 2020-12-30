@@ -7,6 +7,16 @@
 <div class="text-center container-fluid">
     <h1 class="display-4">Quiz Editor</h1>
 
+    @if (Model.InfoList.Count > 0)
+    {
+        <div class="text-info">
+            @foreach (var info in Model.InfoList)
+            {
+                @info <br />
+            }
+        </div>
+    }
+
     @if (Model.ErrorList.Count > 0)
     {
         <div class="text-danger">

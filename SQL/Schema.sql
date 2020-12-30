@@ -1,4 +1,4 @@
-﻿CREATE SCHEMA quiz;
+﻿-- CREATE SCHEMA quiz;
 
 CREATE TABLE [quiz].[Users](
 	[Name] [nvarchar](50) NOT NULL,
@@ -19,9 +19,15 @@ CREATE TABLE [quiz].[QuizQuestions](
 	[QuizId] [uniqueidentifier] NOT NULL,
 	[Question] [nvarchar](4000) NOT NULL,
 	[Answer] [nvarchar](4000) NOT NULL,
+	[Order] [int] NOT NULL,
 	CONSTRAINT [pk_quizquestions] PRIMARY KEY (QuestionId)
 ) ON [PRIMARY]
 GO
 
 -- sample inserts
 INSERT INTO [quiz].[UserQuizzes] (QuizId, [User], QuizName) values (newid(), 'test', 'quiz1');
+
+-- batch insert
+INSERT INTO [quiz].[QuizQuestions] ([QuestionId], [QuizId], [Question], [Answer]) VALUES
+	(newid(), newid(), 'test question', 'test answer'),
+	(newid(), newid(), 'test question2', 'test answer2')
