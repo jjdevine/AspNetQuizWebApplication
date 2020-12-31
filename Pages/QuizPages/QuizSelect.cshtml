@@ -4,9 +4,26 @@
     ViewData["Title"] = "Quiz selection";
 }
 
-<h1> quiz select Page</h1>
+<h1>@Model.Session.Username</h1>
+<br />
 
-<h2>@Model.Session.Username</h2>
+@if (Model.UserQuizzes.Count > 0)
+{
+
+    <h2>Existing Quizzes for this User</h2>
+    <div class="list-group">
+        @foreach (var quiz in Model.UserQuizzes)
+        {
+            <a href="#" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h4>@quiz.QuizName</h4>
+                </div>
+           </a>
+        }
+    </div>
+
+    <br />
+}
 
 <a asp-page="/QuizPages/QuizEditor">Create New Quiz</a>
 

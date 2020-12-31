@@ -5,6 +5,7 @@ namespace QuizWebApplication.Services
 {
     public interface IQuizRepository
     {
+        List<Quiz> LoadQuizzesForUser(string username);
         bool PersistQuiz(Quiz quiz);
         bool PersistQuizQuestions(List<QuizQuestion> quizQuestions);
     }

@@ -30,7 +30,6 @@ namespace QuizWebApplication
             services.AddRazorPages();
             services.AddSession();
 
-            services.AddTransient<JDService>();
             services.AddTransient<DatabaseService>();
             services.AddTransient<IQuizRepository, QuizRepository>();
 
