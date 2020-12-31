@@ -1,4 +1,5 @@
-﻿using QuizWebApplication.Models;
+﻿using Microsoft.Extensions.Configuration;
+using QuizWebApplication.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -10,13 +11,20 @@ namespace QuizWebApplication.Services
 {
     public class QuizRepository : IQuizRepository
     {
+        private readonly IConfiguration Configuration;
+
+        public QuizRepository(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public bool PersistQuiz(Quiz quiz)
         {
             Console.WriteLine($"Persisting Quiz - {quiz}");
 
             String sql = "INSERT INTO [quiz].[UserQuizzes] (QuizId, [User], QuizName) values (@QuizId, @Username, @QuizName);";
 
-            using SqlConnection connection = DatabaseUtils.GetSQLConnection();
+            using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
             using SqlCommand command = new SqlCommand(sql, connection);
 
             command.Parameters.Add("@QuizId", System.Data.SqlDbType.UniqueIdentifier).Value = quiz.Id;
@@ -46,7 +54,7 @@ namespace QuizWebApplication.Services
                 sql.Append($",\r\n (@QuestionId{x}, @QuizId{x}, @Question{x}, @Answer{x}, @Order{x})");
             }
 
-            using SqlConnection connection = DatabaseUtils.GetSQLConnection();
+            using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
             using SqlCommand command = new SqlCommand(sql.ToString(), connection);
 
             for (var x = 0; x < quizQuestions.Count; x++)
