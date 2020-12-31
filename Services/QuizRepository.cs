@@ -79,5 +79,33 @@ namespace QuizWebApplication.Services
 	        (newid(), newid(), 'test question2', 'test answer2')
              */
         }
+
+        public List<Quiz> LoadQuizzesForUser(string username)
+        {
+            String sql = "SELECT QuizId, User, QuizName FROM [quiz].[UserQuizzes] WHERE UPPER([User]) = @Username";
+
+            using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
+            using SqlCommand command = new SqlCommand(sql.ToString(), connection);
+
+            command.Parameters.Add($"@Username", System.Data.SqlDbType.NVarChar, 50).Value = username.ToUpper();
+
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+
+            List<Quiz> resultList = new List<Quiz>();
+
+            while(reader.Read())
+            {
+                resultList.Add(new Quiz()
+                {
+                    Id = reader.GetGuid(0),
+                    Username = reader.GetString(1),
+                    QuizName = reader.GetString(2)
+                }); 
+            }
+
+            return resultList;
+        }
     }
 }
