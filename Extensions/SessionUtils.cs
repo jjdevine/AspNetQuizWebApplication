@@ -29,5 +29,12 @@ namespace QuizWebApplication.Extensions
         {
             session.SetObject(Key, sessionState);
         }
+
+        public static void SetActiveQuiz(ISession session, Guid quizId)
+        {
+            var sessionState = GetSessionState(session);
+            sessionState.ActiveQuizId = quizId;
+            UpdateSessionState(session, sessionState);
+        }
     }
 }

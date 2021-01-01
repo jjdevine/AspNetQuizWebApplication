@@ -107,5 +107,39 @@ namespace QuizWebApplication.Services
 
             return resultList;
         }
+
+        public List<QuizQuestion> LoadQuizQuestions(Guid quizId, int listSize)
+        {
+            String sql = "SELECT TOP "+listSize+" QuestionId, QuizId, Question, Answer, [Order] " +
+                "FROM [quiz].[QuizQuestions] " +
+                "WHERE QuizId = @QuizId " +
+                "ORDER BY NEWID()";
+
+            using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
+            using SqlCommand command = new SqlCommand(sql.ToString(), connection);
+
+            command.Parameters.Add($"@QuizId", System.Data.SqlDbType.UniqueIdentifier).Value = quizId;
+
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+
+            List<QuizQuestion> resultList = new List<QuizQuestion>();
+
+            while (reader.Read())
+            {
+                resultList.Add(new QuizQuestion(
+                        reader.GetGuid(0),
+                        reader.GetGuid(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                        reader.GetInt32(4)
+                    ));
+            }
+
+            return resultList;
+        }
     }
+
+
 }

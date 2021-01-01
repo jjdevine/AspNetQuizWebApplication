@@ -129,8 +129,8 @@ namespace QuizWebApplication.Pages.QuizPages
                         quizQuestions.Add(new QuizQuestion(
                             Guid.NewGuid(),
                             quizId,
-                            tokens[0],
-                            tokens[1],
+                            tokens[0].Trim(),
+                            tokens[1].Trim(),
                             index++));
                     }
                 }
