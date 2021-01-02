@@ -10,6 +10,7 @@ namespace QuizWebApplication.Services
         bool PersistQuiz(Quiz quiz);
         bool PersistQuizQuestions(List<QuizQuestion> quizQuestions);
 
-        List<QuizQuestion> LoadQuizQuestions(Guid quizId, int listSize);
+        List<QuizQuestion> LoadQuizQuestions(Guid quizId, int listSize, bool randomOrder);
+        Quiz LoadQuizById(Guid quizId);
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using QuizWebApplication.Models;
 using QuizWebApplication.Services;
 
 namespace QuizWebApplication.Pages.QuizPages
@@ -20,13 +21,19 @@ namespace QuizWebApplication.Pages.QuizPages
         //routing param
         public string QuizId { get; set; }
 
+        public List<QuizQuestion> QuizQuestions { get; set; }
+
+        public Quiz Quiz { get; set; }
+
         public void OnGet(string quizId)
         {
-            Console.WriteLine($"Playing Quiz - {quizId}");
+            Quiz = QuizRepository.LoadQuizById(Guid.Parse(quizId));
+            Console.WriteLine($"Playing Quiz - {Quiz.QuizName}");
 
-            QuizRepository.LoadQuizQuestions(Guid.Parse(quizId), 50).ForEach(question => Console.WriteLine($"Question [{question.Question}], Answer [{question.Answer}]"));
+            //50 questions max
+            QuizQuestions = QuizRepository.LoadQuizQuestions(Guid.Parse(quizId), 50, true);
 
-            QuizId = quizId;
+            QuizQuestions.ForEach(q => Console.WriteLine(q));
         }
     }
 }

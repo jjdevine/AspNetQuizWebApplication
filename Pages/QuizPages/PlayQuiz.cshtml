@@ -3,4 +3,26 @@
 @model QuizWebApplication.Pages.QuizPages.PlayQuizModel
 
 @{
+    ViewData["Title"] = $"Playing Quiz - {Model.Quiz.QuizName}";
+    ViewData["OmitFooter"] = "true";
 }
+
+<div class="container-fluid h-100">
+    <div class="row h-75">
+        <div class="container-fluid h-100">
+            <div class="row h-50" style="text-align: center;">
+                    Question
+                
+            </div>
+            <div class="row h-50 text-center">
+                Answer
+            </div>
+        </div>
+    </div>
+    <div class="row h-25">
+        <div class="btn-group d-flex w-100 justify-content-between" role="group" aria-label="Basic example">
+            <a class="btn btn-primary mr-2" href="#">Previous</a>
+            <a class="btn btn-primary mr-2" href="#">Next</a>
+        </div>
+    </div>
+</div>
