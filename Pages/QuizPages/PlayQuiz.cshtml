@@ -1,0 +1,116 @@
+﻿@page "{quizId=new}"
+
+@model QuizWebApplication.Pages.QuizPages.PlayQuizModel
+
+@{
+    ViewData["Title"] = $"Playing Quiz - {Model.Quiz.QuizName}";
+    ViewData["OmitFooter"] = "true";
+}
+
+<div class="container-fluid" style="height: 90%!important">
+    <div class="row h-75 my-4">
+        <div class="container-fluid">
+            <div class="row h-50 bg-dark text-white my-2 font-weight-bold">
+                <div id="question-div" class="col-12 text-center align-self-center">
+                    @Model.QuizQuestions[0].Question
+                </div>
+            </div>
+            <div class="row h-50 bg-dark text-white my-2 font-weight-bold">
+                <div id="answer-div" class="col-12 text-center align-self-center">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row h-25">
+        <div class="btn-group d-flex w-100 justify-content-between" role="group" aria-label="Basic example">
+            <a id="link-previous" class="btn btn-primary mr-2 align-self-center h-100">
+                <div class="container-fluid h-100">
+                    <div class="row h-100">
+                        <div class="col-12 text-center align-self-center text-white">
+                            Previous
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a id="link-next" class="btn btn-primary align-self-center h-100">
+                <div class="container-fluid h-100">
+                    <div class="row h-100">
+                        <div class="col-12 text-center align-self-center text-white">
+                            Next
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+@for (var i = 0; i < Model.QuizQuestions.Count; i++)
+{
+    <input id="question-@(i+1)" value="@(Model.QuizQuestions[i].Question)" type="hidden" />
+    <input id="answer-@(i+1)" value="@(Model.QuizQuestions[i].Answer)" type="hidden" />
+}
+
+<script>
+
+    var numberOfElementsShown = 1;
+    var currentIndex = 1;
+
+    $("#link-previous").click(onPreviousClick);
+    $("#link-next").click(onNextClick);
+    
+    function onPreviousClick() {
+        if (atStartOfQuiz()) {
+            alert("You are already at the start of the quiz!");
+            return;
+        }
+
+        if (numberOfElementsShown == 1) {
+            currentIndex--;
+            numberOfElementsShown = 2;
+        } else {
+            numberOfElementsShown = 1;
+        }
+
+        renderQuestionAndAnswer();
+    }
+
+    function onNextClick() {
+        if (atEndOfQuiz()) {
+            alert("You finished the quiz!");
+            return;
+        }
+
+        if (numberOfElementsShown == 1) {
+            numberOfElementsShown = 2;
+        } else {
+            numberOfElementsShown = 1;
+            currentIndex++;
+        }
+
+        renderQuestionAndAnswer();
+    }
+
+    function renderQuestionAndAnswer() {
+        $("#question-div").text($("#question-" + currentIndex).val());
+
+        var answerText = "";
+
+        if (numberOfElementsShown == 2) {
+            answerText = $("#answer-" + currentIndex).val();
+        } 
+
+        $("#answer-div").text(answerText);
+    }
+
+
+
+    function atStartOfQuiz() {
+        return currentIndex == 1 && numberOfElementsShown == 1;
+    }
+
+    function atEndOfQuiz() {
+        return !$("#question-" + (currentIndex + 1)).length && (numberOfElementsShown == 2);
+    }
+</script>

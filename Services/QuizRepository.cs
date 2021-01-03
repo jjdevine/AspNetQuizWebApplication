@@ -38,7 +38,7 @@ namespace QuizWebApplication.Services
 
         public bool PersistQuizQuestions(List<QuizQuestion> quizQuestions)
         {
-            if(quizQuestions.Count == 0)
+            if (quizQuestions.Count == 0)
             {
                 Console.WriteLine("No questions provided!");
                 return false;
@@ -95,17 +95,84 @@ namespace QuizWebApplication.Services
 
             List<Quiz> resultList = new List<Quiz>();
 
-            while(reader.Read())
+            while (reader.Read())
             {
-                resultList.Add(new Quiz()
-                {
-                    Id = reader.GetGuid(0),
-                    Username = reader.GetString(1),
-                    QuizName = reader.GetString(2)
-                }); 
+                resultList.Add(QuizRowMapper.MapRow(reader));
             }
 
             return resultList;
         }
+
+        public Quiz LoadQuizById(Guid quizId)
+        {
+            String sql = "SELECT QuizId, User, QuizName FROM [quiz].[UserQuizzes] WHERE [QuizId] = @QuizId";
+
+            using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
+            using SqlCommand command = new SqlCommand(sql.ToString(), connection);
+
+            command.Parameters.Add($"@QuizId", System.Data.SqlDbType.UniqueIdentifier).Value = quizId;
+
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                return QuizRowMapper.MapRow(reader);
+            }
+
+            throw new ArgumentException($"Quiz with ID [{quizId}] was not found in the Database");
+        }
+
+        public List<QuizQuestion> LoadQuizQuestions(Guid quizId, int listSize, bool randomOrder)
+        {
+            String sql = "SELECT TOP " + listSize + " QuestionId, QuizId, Question, Answer, [Order] " +
+                "FROM [quiz].[QuizQuestions] " +
+                "WHERE QuizId = @QuizId " +
+                "ORDER BY NEWID()";
+
+            using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
+            using SqlCommand command = new SqlCommand(sql.ToString(), connection);
+
+            command.Parameters.Add($"@QuizId", System.Data.SqlDbType.UniqueIdentifier).Value = quizId;
+
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+
+            List<QuizQuestion> resultList = new List<QuizQuestion>();
+
+            while (reader.Read())
+            {
+                resultList.Add(new QuizQuestion(
+                        reader.GetGuid(0),
+                        reader.GetGuid(1),
+                        reader.GetString(2),
+                        reader.GetString(3),
+                        reader.GetInt32(4)
+                    ));
+            }
+
+            if(!randomOrder)
+            {
+                resultList.Sort((a, b) => a.Order.CompareTo(b.Order));
+            }
+
+            return resultList;
+        }
+
+        private class QuizRowMapper {
+            public static Quiz MapRow(SqlDataReader reader)
+            {
+                return new Quiz()
+                {
+                    Id = reader.GetGuid(0),
+                    Username = reader.GetString(1),
+                    QuizName = reader.GetString(2)
+                };
+            }
+        }
     }
+
+
 }

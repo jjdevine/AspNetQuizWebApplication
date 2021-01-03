@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,8 +11,9 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
+
 </head>
-<body>
+<body class="h-100">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -37,17 +38,19 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="container h-100">
+        <main role="main" class="pb-3 h-100">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2020 - QuizWebApplication - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
+    @if (!"true".Equals(ViewData["OmitFooter"])) {
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2020 - QuizWebApplication - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            </div>
+        </footer>
+    }
 
 
 </body>

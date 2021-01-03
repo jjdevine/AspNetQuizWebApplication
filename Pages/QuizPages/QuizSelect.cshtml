@@ -4,27 +4,35 @@
     ViewData["Title"] = "Quiz selection";
 }
 
-<h1>@Model.Session.Username</h1>
-<br />
-
 @if (Model.UserQuizzes.Count > 0)
 {
 
-    <h2>Existing Quizzes for this User</h2>
+    <h1>Quizzes for @Model.Session.Username</h1>
     <div class="list-group">
         @foreach (var quiz in Model.UserQuizzes)
         {
-            <a href="#" class="list-group-item list-group-item-action">
-                <div class="d-flex w-100 justify-content-between">
-                    <h4>@quiz.QuizName</h4>
+            <div class="list-group-item list-group-item-action bg-dark">
+                <div class="d-flex w-100 justify-content-center">
+                    <h4 class="text-light">@quiz.QuizName</h4>
                 </div>
-           </a>
+                <div class="btn-group d-flex w-100 justify-content-between" role="group" aria-label="Basic example">
+                    <a class="btn btn-primary mr-2" asp-page="/QuizPages/PlayQuiz" asp-route-quizId="@quiz.Id">Start Quiz</a>
+                    <a class="btn btn-primary mr-2" asp-page="/QuizPages/EditQuiz" asp-route-quizId="@quiz.Id">Edit Quiz</a>
+                    <a class="btn btn-primary" asp-page="/QuizPages/DeleteQuiz" asp-route-quizId="@quiz.Id">Delete Quiz</a>
+                </div>
+            </div>
+            <br/>
         }
     </div>
-
+}
+else
+{
+    <h1>@Model.Session.Username</h1>
     <br />
+    <span class="text-light">No quizzes created yet...</span>
 }
 
+<br />
 <a asp-page="/QuizPages/QuizEditor">Create New Quiz</a>
 
 

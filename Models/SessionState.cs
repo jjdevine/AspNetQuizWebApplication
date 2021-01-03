@@ -8,5 +8,7 @@ namespace QuizWebApplication.Models
     public class SessionState
     {
         public string Username {get; set;}
+
+        public Guid ActiveQuizId { get; set; }
     }
 }
