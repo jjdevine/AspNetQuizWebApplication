@@ -1,7 +1,9 @@
 ﻿@page "{quizId=new}"
 @model QuizWebApplication.Pages.QuizPages.QuizEditorModel
+@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Quiz User Select";
+    ViewData["username"] = Model.Username;
 }
 
 <div class="text-center container-fluid">

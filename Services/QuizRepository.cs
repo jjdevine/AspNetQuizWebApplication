@@ -22,6 +22,9 @@ namespace QuizWebApplication.Services
         {
             Console.WriteLine($"Persisting Quiz - {quiz}");
 
+            //delete the quiz if it already exists so we can recreate it
+            DeleteQuiz(quiz.Id);
+
             String sql = "INSERT INTO [quiz].[UserQuizzes] (QuizId, [User], QuizName) values (@QuizId, @Username, @QuizName);";
 
             using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
@@ -34,6 +37,41 @@ namespace QuizWebApplication.Services
             connection.Open();
             int result = command.ExecuteNonQuery();
             return result > 0;
+        }
+
+        public bool DeleteQuiz(Guid quizId)
+        {
+            String sql = "DELETE FROM [quiz].[QuizQuestions] WHERE QuizId = @QuizId;";
+
+            using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
+            using SqlCommand command = new SqlCommand(sql, connection);
+
+            command.Parameters.Add("@QuizId", System.Data.SqlDbType.UniqueIdentifier).Value = quizId;
+
+            connection.Open();
+            int result = command.ExecuteNonQuery();
+
+            if(result == 0)
+            {
+                return false; //failed to delete anything
+            }
+
+            sql = "DELETE FROM [quiz].[UserQuizzes] WHERE QuizId = @QuizId;";
+
+            using SqlConnection connection2 = DatabaseUtils.GetSQLConnection(Configuration);
+            using SqlCommand command2 = new SqlCommand(sql, connection);
+
+            command2.Parameters.Add("@QuizId", System.Data.SqlDbType.UniqueIdentifier).Value = quizId;
+
+            connection2.Open();
+            result = command2.ExecuteNonQuery();
+
+            if (result == 0)
+            {
+                return false; //failed to delete anything
+            }
+
+            return true;
         }
 
         public bool PersistQuizQuestions(List<QuizQuestion> quizQuestions)
@@ -126,10 +164,23 @@ namespace QuizWebApplication.Services
 
         public List<QuizQuestion> LoadQuizQuestions(Guid quizId, int listSize, bool randomOrder)
         {
-            String sql = "SELECT TOP " + listSize + " QuestionId, QuizId, Question, Answer, [Order] " +
+            String topClause = "";
+            String orderClause = "[Order]";
+
+            if (listSize > 0)
+            {
+                topClause = $"TOP {listSize}";
+                
+            } 
+            if(randomOrder)
+            {
+                orderClause = "NEWID()";
+            }
+
+            String sql = $"SELECT {topClause} QuestionId, QuizId, Question, Answer, [Order] " +
                 "FROM [quiz].[QuizQuestions] " +
                 "WHERE QuizId = @QuizId " +
-                "ORDER BY NEWID()";
+                $"ORDER BY {orderClause}";
 
             using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
             using SqlCommand command = new SqlCommand(sql.ToString(), connection);

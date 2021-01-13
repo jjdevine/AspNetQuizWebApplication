@@ -4,26 +4,26 @@
 
 @{
     ViewData["Title"] = $"Playing Quiz - {Model.Quiz.QuizName}";
-    ViewData["OmitFooter"] = "true";
+    ViewData["username"] = Model.Username;
 }
 
 <div class="container-fluid" style="height: 90%!important">
     <div class="row h-75 my-4">
-        <div class="container-fluid">
-            <div class="row h-50 bg-dark text-white my-2 font-weight-bold">
+        <div class="container h-100">
+            <div class="row h-50 bg-dark text-white my-2 font-weight-bold" style="overflow-y: scroll; font-size: 1.8em">
                 <div id="question-div" class="col-12 text-center align-self-center">
                     @Model.QuizQuestions[0].Question
                 </div>
             </div>
-            <div class="row h-50 bg-dark text-white my-2 font-weight-bold">
-                <div id="answer-div" class="col-12 text-center align-self-center">
+            <div class="row h-50 bg-dark text-white my-2 font-weight-bold" style="overflow-y: scroll; font-size: 1.8em">
+                <div id="answer-div" class="col-12 text-center align-self-center overflow-auto">
                     
                 </div>
             </div>
         </div>
     </div>
     <div class="row h-25">
-        <div class="btn-group d-flex w-100 justify-content-between" role="group" aria-label="Basic example">
+        <div class="btn-group d-flex w-100 justify-content-between" role="group">
             <a id="link-previous" class="btn btn-primary mr-2 align-self-center h-100">
                 <div class="container-fluid h-100">
                     <div class="row h-100">

@@ -14,6 +14,7 @@ namespace QuizWebApplication.Extensions
 
         public static SessionState GetSessionState(ISession session)
         {
+
             var sessionState = session.GetObject<SessionState>(Key);
 
             if(sessionState == null)
