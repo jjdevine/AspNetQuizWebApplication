@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -43,6 +44,8 @@ namespace QuizWebApplication.Pages.QuizPages
         private readonly List<String> infoList = new List<string>();
         public List<String> InfoList { get { return infoList; } }
 
+        public String Username { get; set; }
+
         public void OnGet(string quizId)
         {
             QuizId = quizId;
@@ -52,6 +55,14 @@ namespace QuizWebApplication.Pages.QuizPages
             {
                 QuizText = "Sample Question 1=Sample Answer 1\nSample Question 2=Sample Answer 2\nSample Question 3=Sample Answer 3";
             }
+            else
+            {
+                Guid QuizIdAsGuid = Guid.Parse(QuizId);
+                QuizName = QuizRepository.LoadQuizById(QuizIdAsGuid).QuizName;
+                QuizText = LoadQuizText(QuizIdAsGuid);
+            }
+
+            Username = SessionUtils.GetSessionState(HttpContext.Session).Username;
         }
 
         public IActionResult OnPost()
@@ -103,9 +114,17 @@ namespace QuizWebApplication.Pages.QuizPages
             {
                 Console.WriteLine("new quiz");
                 quiz.Id = Guid.NewGuid();
-                quiz.QuizName = QuizName;
-                quiz.Username = SessionUtils.GetSessionState(HttpContext.Session).Username;
             }
+            else
+            {
+                Console.WriteLine("Updating existing quiz");
+                quiz.Id = Guid.Parse(QuizId); 
+            }
+
+            quiz.QuizName = QuizName;
+            quiz.Username = SessionUtils.GetSessionState(HttpContext.Session).Username;
+
+            Console.WriteLine($"Parsed Quiz: [{quiz}]");
 
             return quiz;
         }
@@ -137,6 +156,17 @@ namespace QuizWebApplication.Pages.QuizPages
             }
 
             return quizQuestions;
+        }
+
+        private string LoadQuizText(Guid quizId)
+        {
+            List<QuizQuestion> quizQuestions = QuizRepository.LoadQuizQuestions(quizId, -1, false);
+
+            StringBuilder result = new StringBuilder();
+
+            quizQuestions.ForEach(question => result.Append($"{question.Question}={question.Answer}\n"));
+
+            return result.ToString();
         }
 
 

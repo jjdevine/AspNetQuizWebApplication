@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using QuizWebApplication.Extensions;
 using QuizWebApplication.Models;
 using QuizWebApplication.Services;
 
@@ -25,6 +26,8 @@ namespace QuizWebApplication.Pages.QuizPages
 
         public Quiz Quiz { get; set; }
 
+        public string Username { get; set; }
+
         public void OnGet(string quizId)
         {
             Quiz = QuizRepository.LoadQuizById(Guid.Parse(quizId));
@@ -33,7 +36,7 @@ namespace QuizWebApplication.Pages.QuizPages
             //50 questions max
             QuizQuestions = QuizRepository.LoadQuizQuestions(Guid.Parse(quizId), 50, true);
 
-            QuizQuestions.ForEach(q => Console.WriteLine(q));
+            Username = SessionUtils.GetSessionState(HttpContext.Session)?.Username;
         }
     }
 }

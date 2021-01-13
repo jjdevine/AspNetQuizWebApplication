@@ -25,14 +25,14 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/QuizPages/UserSelect">User Select</a>
                         </li>
+                        @if(@ViewData["username"] != null)
+                        { 
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/QuizPages/QuizSelect">Quiz Select</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -43,15 +43,5 @@
             @RenderBody()
         </main>
     </div>
-
-    @if (!"true".Equals(ViewData["OmitFooter"])) {
-        <footer class="border-top footer text-muted">
-            <div class="container">
-                &copy; 2020 - QuizWebApplication - <a asp-area="" asp-page="/Privacy">Privacy</a>
-            </div>
-        </footer>
-    }
-
-
 </body>
 </html>
