@@ -29,18 +29,19 @@
         </div>
     }
 
-    <form method="post">
-        <input asp-for="QuizId" type="hidden">
-        <div class="form-group">
-            <label asp-for="QuizName">Quiz Name</label>
-            <input asp-for="QuizName" class="form-control" />
-        </div>
-        <div class="form-group">
-            <label asp-for="QuizText">Questions and answers</label>
-            <textarea asp-for="QuizText" class="form-control" rows="25"></textarea>
-        </div>
-        <input type="submit" value="Save Quiz" />
-    </form>
+<form method="post">
+    <input asp-for="QuizId" type="hidden">
+    <input asp-for="IsNewQuiz" type="hidden">
+    <div class="form-group">
+        <label asp-for="QuizName">Quiz Name</label>
+        <input asp-for="QuizName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="QuizText">Questions and answers</label>
+        <textarea asp-for="QuizText" class="form-control" rows="25"></textarea>
+    </div>
+    <input type="submit" value="Save Quiz" />
+</form>
 
 
 

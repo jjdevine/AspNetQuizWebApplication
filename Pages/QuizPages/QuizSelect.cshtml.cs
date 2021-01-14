@@ -22,8 +22,13 @@ namespace QuizWebApplication.Pages.QuizPages
 
         public SessionState Session { get { return SessionUtils.GetSessionState(HttpContext.Session); } }
 
-        public void OnGet()
+        public void OnGet(string quizId)
         {
+            string delete = HttpContext.Request.Query["delete"];
+            Console.WriteLine($"delete is [{delete}]");
+            Console.WriteLine($"quizId is [{quizId}]");
+
+
             var username = SessionUtils.GetSessionState(HttpContext.Session).Username;
 
             UserQuizzes = QuizRepository.LoadQuizzesForUser(username);

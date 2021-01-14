@@ -26,6 +26,7 @@ namespace QuizWebApplication.Pages.QuizPages
         [BindProperty]
         public string QuizId { get; set; }
 
+        [BindProperty]
         public bool IsNewQuiz { get; set; }
 
         [StringLength(100, MinimumLength = 3)]
@@ -86,6 +87,20 @@ namespace QuizWebApplication.Pages.QuizPages
             {
                 errorList.Add($"1000 Questions is the maximum - you have {quizQuestions.Count}");
                 return Page();
+            }
+
+            if (IsNewQuiz)
+            {
+                List<Quiz> existingQuizzes = QuizRepository.LoadQuizzesForUser(SessionUtils.GetSessionState(HttpContext.Session).Username);
+                IEnumerable<Quiz> quizzesWithSameName = from existingQuiz in existingQuizzes
+                                                        where existingQuiz.QuizName.ToLower().Equals(quiz.QuizName.ToLower())
+                                                        select quiz;
+                Console.WriteLine($"quizzesWithSameName = {quizzesWithSameName.Count()}");
+                if (quizzesWithSameName.Count() > 0)
+                {
+                    errorList.Add($"You already have a quiz called '{quiz.QuizName}'");
+                    return Page();
+                }
             }
 
             bool success = QuizRepository.PersistQuiz(quiz);

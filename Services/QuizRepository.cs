@@ -120,7 +120,7 @@ namespace QuizWebApplication.Services
 
         public List<Quiz> LoadQuizzesForUser(string username)
         {
-            String sql = "SELECT QuizId, User, QuizName FROM [quiz].[UserQuizzes] WHERE UPPER([User]) = @Username";
+            String sql = "SELECT QuizId, [User], QuizName FROM [quiz].[UserQuizzes] WHERE UPPER([User]) = @Username";
 
             using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
             using SqlCommand command = new SqlCommand(sql.ToString(), connection);
