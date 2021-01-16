@@ -12,5 +12,6 @@ namespace QuizWebApplication.Services
 
         List<QuizQuestion> LoadQuizQuestions(Guid quizId, int listSize, bool randomOrder);
         Quiz LoadQuizById(Guid quizId);
+        bool DeleteQuiz(Guid quizId);
     }
 }

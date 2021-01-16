@@ -8,6 +8,27 @@
 {
 
     <h1>Quizzes for @Model.Session.Username</h1>
+
+    @if (Model.InfoList.Count > 0)
+    {
+        <div class="text-info">
+            @foreach (var info in Model.InfoList)
+            {
+                @info <br />
+            }
+        </div>
+    }
+
+    @if (Model.ErrorList.Count > 0)
+    {
+        <div class="text-danger">
+            @foreach (var error in Model.ErrorList)
+            {
+                @error <br />
+            }
+        </div>
+    }
+
     <div class="list-group">
         @foreach (var quiz in Model.UserQuizzes)
         {
@@ -18,10 +39,14 @@
                 <div class="btn-group d-flex w-100 justify-content-between" role="group" aria-label="Basic example">
                     <a class="btn btn-primary mr-2" asp-page="/QuizPages/PlayQuiz" asp-route-quizId="@quiz.Id">Start Quiz</a>
                     <a class="btn btn-primary mr-2" asp-page="/QuizPages/QuizEditor" asp-route-quizId="@quiz.Id">Edit Quiz</a>
-                    <a class="btn btn-primary" asp-page="/QuizPages/DeleteQuiz" asp-route-quizId="@quiz.Id">Delete Quiz</a>
+                    @Html.ActionLink(
+                       "Delete Quiz",
+                       "/QuizPages/QuizSelect",
+                       new { delete = "Y", quizId = quiz.Id },
+                       new { @class = "btn btn-primary" })
                 </div>
             </div>
-            <br/>
+            <br />
         }
     </div>
 }
