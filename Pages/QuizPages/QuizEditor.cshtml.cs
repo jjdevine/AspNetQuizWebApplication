@@ -68,6 +68,8 @@ namespace QuizWebApplication.Pages.QuizPages
 
         public IActionResult OnPost()
         {
+            Username = SessionUtils.GetSessionState(HttpContext.Session).Username;
+
             if (!ModelState.IsValid)
             {
                 errorList.Add("Quiz is Invalid");

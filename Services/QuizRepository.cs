@@ -143,7 +143,7 @@ namespace QuizWebApplication.Services
 
         public Quiz LoadQuizById(Guid quizId)
         {
-            String sql = "SELECT QuizId, User, QuizName FROM [quiz].[UserQuizzes] WHERE [QuizId] = @QuizId";
+            String sql = "SELECT QuizId, [User], QuizName FROM [quiz].[UserQuizzes] WHERE [QuizId] = @QuizId";
 
             using SqlConnection connection = DatabaseUtils.GetSQLConnection(Configuration);
             using SqlCommand command = new SqlCommand(sql.ToString(), connection);
