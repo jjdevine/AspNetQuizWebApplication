@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using QuizWebApplication.EntityFramework;
 using QuizWebApplication.Extensions;
 using QuizWebApplication.Models;
 using QuizWebApplication.Services;
@@ -13,9 +14,11 @@ namespace QuizWebApplication.Pages.QuizPages
     public class QuizSelectModel : PageModel
     {
         private readonly IQuizRepository QuizRepository;
-        public QuizSelectModel(IQuizRepository quizRepository)
+        private readonly QuizContext QuizContext;
+        public QuizSelectModel(IQuizRepository quizRepository, QuizContext quizContext)
         {
             this.QuizRepository = quizRepository;
+            this.QuizContext = quizContext;
         }
 
         public List<Quiz> UserQuizzes;
@@ -34,6 +37,11 @@ namespace QuizWebApplication.Pages.QuizPages
 
             var username = SessionUtils.GetSessionState(HttpContext.Session)?.Username;
             UserQuizzes = QuizRepository.LoadQuizzesForUser(username);
+
+            //TODO: select some records from the DB
+            //https://docs.microsoft.com/en-us/aspnet/core/data/ef-rp/crud?view=aspnetcore-5.0
+           // QuizContext.Quizzes.W
+
 
             if (username != null && string.Equals(delete, "y", StringComparison.OrdinalIgnoreCase))
             {

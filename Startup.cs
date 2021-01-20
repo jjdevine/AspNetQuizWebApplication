@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using QuizWebApplication.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuizWebApplication.EntityFramework;
 
 namespace QuizWebApplication
 {
@@ -38,6 +39,10 @@ namespace QuizWebApplication
             services.AddMvc().AddRazorPagesOptions(options => {
                 options.Conventions.AddPageRoute("/QuizPages/UserSelect", "");
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddDbContext<QuizContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("QuizWebApplicationContext")));
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
