@@ -19,8 +19,11 @@ namespace QuizWebApplication.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Quiz>().ToTable("UserQuizzes");
-            modelBuilder.Entity<QuizQuestion>().ToTable("QuizQuestions");
+            modelBuilder.Entity<Quiz>()
+                .ToTable("UserQuizzes", "quiz")
+                .Property(q => q.Id).HasColumnName("QuizId");
+            modelBuilder.Entity<Quiz>().Property(q => q.Username).HasColumnName("User");
+            modelBuilder.Entity<QuizQuestion>().ToTable("QuizQuestions", "quiz");
         }
     }
 
