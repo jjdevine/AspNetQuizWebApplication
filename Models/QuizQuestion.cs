@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,6 +17,7 @@ namespace QuizWebApplication.Models
             this.Order = order;
         }
 
+        [Key]
         public Guid QuestionId { get; set; }
         public Guid QuizId { get; set; }
         public string Question { get; set; }
