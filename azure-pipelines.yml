@@ -32,6 +32,21 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+   
+- task: AzureAppServiceSettings@1
+  inputs:
+    azureSubscription: 'Azure Portal - MPN Subscription'
+    appName: 'QuizWebAppGitHub'
+    resourceGroupName: 'quiz-rg'
+    connectionStrings: |
+      [
+         {
+          "name": "QuizWebApplicationContext",
+          "value": "Data Source=tcp:quizwebappdb.database.windows.net,1433;Initial Catalog=QuizDB;User Id=jjdevine@quizwebappdb;Password=QuizWebApp1",
+          "slotSetting": false
+         }
+      ]
+      
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
