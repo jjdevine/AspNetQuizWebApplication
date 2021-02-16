@@ -36,7 +36,7 @@ namespace QuizWebApplication.Pages.QuizPages
             //50 questions max
             QuizQuestions = QuizRepository.LoadQuizQuestions(Guid.Parse(quizId), 50, true);
 
-            Username = SessionUtils.GetSessionState(HttpContext.Session)?.Username;
+            Username = UserUtils.GetUserFriendlyName(User);
         }
     }
 }

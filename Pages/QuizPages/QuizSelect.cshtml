@@ -7,7 +7,7 @@
 @if (Model.UserQuizzes.Count > 0)
 {
 
-    <h1>Quizzes for @Model.Session.Username</h1>
+    <h1>Quizzes for @Model.Username</h1>
 
     @if (Model.InfoList.Count > 0)
     {
@@ -52,7 +52,7 @@
 }
 else
 {
-    <h1>@Model.Session.Username</h1>
+    <h1>@Model.Username</h1>
     <br />
     <span class="text-light">No quizzes created yet...</span>
 }

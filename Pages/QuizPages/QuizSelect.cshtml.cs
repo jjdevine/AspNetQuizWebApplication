@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QuizWebApplication.EntityFramework;
@@ -11,6 +12,7 @@ using QuizWebApplication.Services;
 
 namespace QuizWebApplication.Pages.QuizPages
 {
+    [Authorize]
     public class QuizSelectModel : PageModel
     {
         private readonly IQuizRepository QuizRepository;
@@ -27,22 +29,23 @@ namespace QuizWebApplication.Pages.QuizPages
         private readonly List<String> infoList = new List<string>();
         public List<String> InfoList { get { return infoList; } }
 
-        public SessionState Session { get { return SessionUtils.GetSessionState(HttpContext.Session); } }
+        public String Username { get; set; }
 
         public void OnGet(string quizId)
         {
+            Username = UserUtils.GetUserFriendlyName(User);
             string delete = HttpContext.Request.Query["delete"];
 
-            var username = SessionUtils.GetSessionState(HttpContext.Session)?.Username;
-            UserQuizzes = QuizRepository.LoadQuizzesForUser(username);
+            var userId = UserUtils.GetUserSubject(User);
+            UserQuizzes = QuizRepository.LoadQuizzesForUser(userId);
 
-            if (username != null && string.Equals(delete, "y", StringComparison.OrdinalIgnoreCase))
+            if (userId != null && string.Equals(delete, "y", StringComparison.OrdinalIgnoreCase))
             {
-                DeleteQuiz(quizId, username);
+                DeleteQuiz(quizId, userId);
             }
         }
 
-        private void DeleteQuiz(string quizId, string username)
+        private void DeleteQuiz(string quizId, string userId)
         {
             Guid.TryParse(quizId, out Guid quizIdGuid);
 
@@ -53,14 +56,14 @@ namespace QuizWebApplication.Pages.QuizPages
 
             //check quiz is owned by logged in user
             IEnumerable<Quiz> quizToDelete = from userQuiz in UserQuizzes
-                                                where userQuiz.Username.ToLower().Equals(username.ToLower())
+                                                where userQuiz.Username.ToLower().Equals(userId.ToLower())
                                                 && userQuiz.Id.Equals(quizIdGuid)
                                                 select userQuiz;
 
             if (quizToDelete.Count() > 0 && QuizRepository.DeleteQuiz(quizIdGuid))
             {
                 InfoList.Add($"Quiz '{quizToDelete.First().QuizName}' was deleted!");
-                UserQuizzes = QuizRepository.LoadQuizzesForUser(username);
+                UserQuizzes = QuizRepository.LoadQuizzesForUser(userId);
             }
             else
             {

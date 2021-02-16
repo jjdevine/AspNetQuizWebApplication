@@ -13,6 +13,9 @@ using QuizWebApplication.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuizWebApplication.EntityFramework;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace QuizWebApplication
 {
@@ -28,6 +31,27 @@ namespace QuizWebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //https://developers.onelogin.com/blog/how-to-use-openid-connect-authentication-with-dotnet-core
+            //https://manage.auth0.com/dashboard/eu/jjdevine1984/applications/LJQNyfrrxd4xfefDckiMIai1P7eyvjT5/settings
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddOpenIdConnect(options =>
+            {
+                //       options.ClientId = "LJQNyfrrxd4xfefDckiMIai1P7eyvjT5";
+                //     options.ClientSecret = "yLJ_tr_Efg1k42itXp871HnhqZsjh1OZJDw9TfAeT_Dns51Sqi2B6TOC1iHhrG01";
+                //      options.Authority = "https://jjdevine1984.eu.auth0.com/";
+                options.ClientId = Configuration.GetValue<String>("IdP_ClientId");
+                options.ClientSecret = Configuration.GetValue<String>("IdP_ClientSecret");
+                options.Authority = Configuration.GetValue<String>("IdP_Authority");
+                options.ResponseType = OpenIdConnectResponseType.Code;
+                options.GetClaimsFromUserInfoEndpoint = true;
+            });
+
             services.AddRazorPages();
             services.AddSession();
 
@@ -37,7 +61,7 @@ namespace QuizWebApplication
             services.AddControllers();
 
             services.AddMvc().AddRazorPagesOptions(options => {
-                options.Conventions.AddPageRoute("/QuizPages/UserSelect", "");
+                options.Conventions.AddPageRoute("/QuizPages/QuizSelect", "");
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddDbContext<QuizContext>(options =>
@@ -71,6 +95,7 @@ namespace QuizWebApplication
 
             app.UseSession();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

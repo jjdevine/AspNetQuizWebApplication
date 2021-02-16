@@ -10,32 +10,27 @@ namespace QuizWebApplication.Extensions
 {
     public class SessionUtils
     {
-        private const string Key = "SESSION_STATE";
-
-        public static SessionState GetSessionState(ISession session)
-        {
-
-            var sessionState = session.GetObject<SessionState>(Key);
-
-            if(sessionState == null)
-            {
-                sessionState = new SessionState();
-                session.SetObject(Key, sessionState);
-            }
-
-            return sessionState;
-        }
-
-        public static void UpdateSessionState(ISession session, SessionState sessionState)
-        {
-            session.SetObject(Key, sessionState);
-        }
+        private const string KEY_ACTIVE_QUIZ = "ACTIVE_QUIZ";
 
         public static void SetActiveQuiz(ISession session, Guid quizId)
         {
-            var sessionState = GetSessionState(session);
-            sessionState.ActiveQuizId = quizId;
-            UpdateSessionState(session, sessionState);
+            session.SetString(KEY_ACTIVE_QUIZ, quizId.ToString());
+        }
+
+        public static Guid? GetActiveQuiz(ISession session)
+        {
+            string activeSessionStr = session.GetString(KEY_ACTIVE_QUIZ);
+
+            bool activeQuizExists = Guid.TryParse(activeSessionStr, out Guid result);
+
+            if (activeQuizExists)
+            {
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
