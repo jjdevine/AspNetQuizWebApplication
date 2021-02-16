@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QuizWebApplication.Extensions;
@@ -12,6 +14,7 @@ using QuizWebApplication.Services;
 
 namespace QuizWebApplication.Pages.QuizPages
 {
+    [Authorize]
     public class QuizEditorModel : PageModel
     {
         private readonly IQuizRepository QuizRepository;
@@ -47,6 +50,8 @@ namespace QuizWebApplication.Pages.QuizPages
 
         public String Username { get; set; }
 
+        public String UserId { get; set; }
+
         public void OnGet(string quizId)
         {
             QuizId = quizId;
@@ -63,12 +68,12 @@ namespace QuizWebApplication.Pages.QuizPages
                 QuizText = LoadQuizText(QuizIdAsGuid);
             }
 
-            Username = SessionUtils.GetSessionState(HttpContext.Session).Username;
+            Username = UserUtils.GetUserFriendlyName(User);
         }
 
         public IActionResult OnPost()
         {
-            Username = SessionUtils.GetSessionState(HttpContext.Session).Username;
+            UserId = UserUtils.GetUserSubject(User);
 
             if (!ModelState.IsValid)
             {
@@ -93,7 +98,7 @@ namespace QuizWebApplication.Pages.QuizPages
 
             if (IsNewQuiz)
             {
-                List<Quiz> existingQuizzes = QuizRepository.LoadQuizzesForUser(SessionUtils.GetSessionState(HttpContext.Session).Username);
+                List<Quiz> existingQuizzes = QuizRepository.LoadQuizzesForUser(UserId);
                 IEnumerable<Quiz> quizzesWithSameName = from existingQuiz in existingQuizzes
                                                         where existingQuiz.QuizName.ToLower().Equals(quiz.QuizName.ToLower())
                                                         select quiz;
@@ -139,7 +144,7 @@ namespace QuizWebApplication.Pages.QuizPages
             }
 
             quiz.QuizName = QuizName;
-            quiz.Username = SessionUtils.GetSessionState(HttpContext.Session).Username;
+            quiz.Username = UserUtils.GetUserSubject(User);
 
             Console.WriteLine($"Parsed Quiz: [{quiz}]");
 
